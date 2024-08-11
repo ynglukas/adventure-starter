@@ -1,3 +1,5 @@
+const Room = require('./room')
+
 class Player {
 
     constructor(name, startingRoom) {
@@ -32,24 +34,47 @@ class Player {
     }
 
     takeItem(itemName) {
-
-        // Fill this in
-
+        const item = this.currentRoom.getItemByName(itemName);
+        if(item) {
+            this.currentRoom.removeItem(item);
+            this.items.push(item);
+            return `${this.name} picked up ${itemName}.`
+        }
+        return `${itemName} not found in the room`
     }
 
     dropItem(itemName) {
-
-        // Fill this in
+        const item = this.getItemByName(itemName);
+        if (item) {
+            this.items = this.items.filter(i => i !== item);
+            this.currentRoom.addItem(item);
+            return `${this.name} dropped ${itemName}`;
+        }
+        return `${itemName} not found in inventory`
     }
 
     eatItem(itemName) {
-        // Fill this in
+        for(let i = 0; i < this.items.length; i++) {
+            const item = this.items[i];
 
+            if(item.name === itemName) {
+                if(item.isFood) {
+                    this.items.splice(i, 1);
+                    return `${this.name} ate ${itemName}.`;
+                }else {
+                    return `${itemName} is not edible.`
+                }
+            }
+        }
     }
 
     getItemByName(name) {
-
-        // Fill this in
+        for(const item of this.items) {
+            if(item.name === name) {
+                return item;
+            }
+        }
+        return null;
     }
 }
 
